@@ -36,7 +36,7 @@ def precargar_datos():
                 "atenciones": [{"motivo": "Limpieza Dental", "costo": 45000}]
             },
             {
-                "nombre": "Felix", "especie": "Gato", "edad": 1, "fecha_ingreso": datetime(2026, 4, 02),
+                "nombre": "Felix", "especie": "Gato", "edad": 1, "fecha_ingreso": datetime(2026, 4, 2),
                 "dueno": {"nombre": "Mia Colucci", "telefono": "+56977778888", "correo": "mia@mail.com"},
                 "atenciones": [{"motivo": "Urgencia Obstruccion", "costo": 85000}, {"motivo": "Control Postop", "costo": 15000}]
             },
