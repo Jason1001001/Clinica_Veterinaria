@@ -18,7 +18,7 @@ coleccion = db["mascotas"]
 
 def precargar_datos():
     if coleccion.count_documents({}) == 0:
-        # 8 Documentos iniciales con subdocumento (dueno), array de subdocumentos (atenciones) y fecha significativos
+        # 8 Documentos iniciales corregidos sin ceros a la izquierda en datetime
         mascotas = [
             {
                 "nombre": "Thor", "especie": "Perro", "edad": 5, "fecha_ingreso": datetime(2026, 2, 10),
@@ -46,7 +46,7 @@ def precargar_datos():
                 "atenciones": [{"motivo": "Vacuna Octuple", "costo": 18000}]
             },
             {
-                "nombre": "Toby", "especie": "Perro", "edad": 9, "fecha_ingreso": datetime(2026, 5, 05),
+                "nombre": "Toby", "especie": "Perro", "edad": 9, "fecha_ingreso": datetime(2026, 5, 5),
                 "dueno": {"nombre": "Rosa Espinoza", "telefono": "+56912345678", "correo": "rosa@mail.com"},
                 "atenciones": [{"motivo": "Cirugia Esterilizacion", "costo": 120000}]
             },
@@ -97,7 +97,6 @@ def crear_documento():
 
 def listar_documentos():
     print("\n--- LISTADO GENERAL DE MASCOTAS (CON PROYECCIÓN TÁCTICA) ---")
-    # Proyección selectiva para cumplir nivel destacado sin ensuciar consola
     for doc in coleccion.find({}, {"nombre": 1, "especie": 1, "edad": 1, "dueno.nombre": 1, "_id": 0}):
         print(f"- {doc.get('nombre')} ({doc.get('especie')}) | Edad: {doc.get('edad')} años | Responsable: {doc.get('dueno', {}).get('nombre')}")
 
@@ -157,7 +156,6 @@ def actualizar_sub_array():
         print(f"Estado Pre-Operación:\n{doc}")
         nuevo_motivo = input("Nuevo motivo de atención a registrar: ")
         nuevo_costo = float(input("Costo de la atención: "))
-        # Inserta un elemento en el array de subdocumentos usando $push
         coleccion.update_one({"_id": doc["_id"]}, {"$push": {"atenciones": {"motivo": nuevo_motivo, "costo": nuevo_costo}}})
         print(f"Estado Post-Operación:\n{coleccion.find_one({'_id': doc['_id']})}")
     else:
@@ -178,7 +176,6 @@ def eliminar_documento():
 
 def pipeline_agregacion():
     print("\n--- PIPELINE DE AGREGACIÓN DE ALTO RENDIMIENTO (3 ETAPAS) ---")
-    # Desarrolla: $unwind del array -> $match para procesar solo Perros -> $group para calcular costos de atención por mascota
     pipeline = [
         {"$unwind": "$atenciones"},
         {"$match": {"especie": "Perro"}},
